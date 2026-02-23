@@ -78,6 +78,7 @@ public class CarClinicApp {
                     patientHandler.viewAllPatients(carClinicSystem);
                     break;
                 case 3:
+                    patientHandler.checkInPatient(carClinicSystem);
                     break;
                 case 4:
                     patientHandler.printSearchedPatient(carClinicSystem);

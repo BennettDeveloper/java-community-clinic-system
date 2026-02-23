@@ -52,7 +52,7 @@ public class PatientHandler {
             System.out.print(carClinicSystem.getCarPatients().get(i).getLastName() + ", ");
             System.out.print(carClinicSystem.getCarPatients().get(i).getFirstName() + " | ");
             System.out.print(carClinicSystem.getCarPatients().get(i).getEmail() + " | ");
-            System.out.print(carClinicSystem.getCarPatients().get(i).getPhoneNumber());
+            System.out.print(carClinicSystem.getCarPatients().get(i).getPhoneNumber() + " | ");
 
             String checkedInMsg = (carClinicSystem.getCarPatients().get(i).isCheckedIn() ? "Yes" : " No");
             System.out.print("Checked In: " + checkedInMsg);
@@ -148,7 +148,7 @@ public class PatientHandler {
             System.out.println("Email: " + searchedPatient.getEmail());
             System.out.println("Phone Number: " + searchedPatient.getPhoneNumber());
             System.out.println("UUID: " + searchedPatient.getPatientID());
-            System.out.println("Checked-In" + (searchedPatient.isCheckedIn() ? "Yes" : "No"));
+            System.out.println("Checked-In: " + (searchedPatient.isCheckedIn() ? "Yes" : "No"));
             System.out.println("Type any key to continue...");
             InputHandler.handleStringInput();
             System.out.println("-------------------------------------");
