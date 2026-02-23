@@ -6,8 +6,11 @@ import java.sql.Array;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class CarAppointment {
+
+    private String appointmentID;
 
     private static final LocalTime OPEN_TIME = LocalTime.of(7,0);
     private static final LocalTime CLOSE_TIME = LocalTime.of(21,0);
@@ -18,20 +21,17 @@ public class CarAppointment {
 
     private String serviceType;
 
-    private boolean isDuringBusinessHours(TimeSlot timeSlot){
+    public boolean isDuringBusinessHours(TimeSlot timeSlot){
         LocalTime startTime = timeSlot.getStart().toLocalTime();
         LocalTime endTime = timeSlot.getEnd().toLocalTime();
 
         return startTime.isAfter(OPEN_TIME) && endTime.isBefore(CLOSE_TIME);
     }
     public CarAppointment(CarPatient carPatient, TimeSlot timeSlot, String serviceType){
-        if(isDuringBusinessHours(timeSlot)){
             this.carPatient = carPatient;
             this.timeSlot = timeSlot;
             this.serviceType= serviceType;
-        } else {
-            System.out.println("Appointment must be between our business hours of 7am-9pm");
-        }
+            appointmentID = UUID.randomUUID().toString().substring(0, 6);
     }
 
     public CarAppointment(CarPatient carPatient, TimeSlot timeSlot){
@@ -41,6 +41,14 @@ public class CarAppointment {
         } else {
             System.out.println("Appointment must be between our business hours of 7am-9pm");
         }
+    }
+
+    public String getAppointmentID() {
+        return appointmentID;
+    }
+
+    public void setAppointmentID(String appointmentID) {
+        this.appointmentID = appointmentID;
     }
 
     public TimeSlot getTimeSlot() {
@@ -79,4 +87,3 @@ public class CarAppointment {
 
 
 }
->>>>>>> d6d1dc034c29286415d4af47d7a7fba793f14ae5
