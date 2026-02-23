@@ -80,38 +80,50 @@ public class ShopScheduler {
     // Print full schedule
     public void printSchedule(CarClinicSystem carClinicSystem) {
         System.out.println("\n=== CWW Auto Repair Shop Daily Schedule ===");
+        System.out.println("---------------------------------------------");
 
-        for (int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
+        if(carClinicSystem.getCarAppointments().size() < 1) {
+            System.out.println("No appointments currently scheduled!");
+        }
+        else {
+            for (int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
+                CarAppointment appointment = carClinicSystem.getCarAppointments().get(i);
 
-            CarAppointment appointment = carClinicSystem.getCarAppointments().get(i);
-
-            if (appointment == null) {
-                System.out.println((i + 1) + " - AVAILABLE");
-            } else {
-                System.out.println((i + 1) + ". " + "(" + appointment.getAppointmentID() + ") "
-                        + appointment.getCarPatient().getLastName() + ", " + appointment.getCarPatient().getFirstName()
-                        + " (" + appointment.getTimeSlot().getStart() +
-                        " - " + appointment.getTimeSlot().getEnd() +
-                        ") (" + appointment.getServiceType() + ")");
+                if (appointment == null) {
+                    System.out.println((i + 1) + " - AVAILABLE");
+                } else {
+                    System.out.println((i + 1) + ". " + "(" + appointment.getAppointmentID() + ") "
+                            + appointment.getCarPatient().getLastName() + ", " + appointment.getCarPatient().getFirstName()
+                            + " (" + appointment.getTimeSlot().getStart() +
+                            " - " + appointment.getTimeSlot().getEnd() +
+                            ") (" + appointment.getServiceType() + ")");
+                }
             }
+
         }
+        System.out.println("-------------------------------");
         System.out.println("WAITLIST APPOINTMENTS");
+        System.out.println("-------------------------------");
 
-        for(int i=0; i>carClinicSystem.getWaitlist().size();i++){
-            String firstName = carClinicSystem.getWaitlist().getEntries(i).getPatient().getFirstName();
-            String lastName = carClinicSystem.getWaitlist().getEntries(i).getPatient().getLastName();
-            String id = carClinicSystem.getWaitlist().getEntries(i).getPatient().getPatientID();
+        if(carClinicSystem.getWaitlist().getAll().size() < 1) {
+            System.out.println("No appointments on waitlist!");
+        }
+        else {
+            for(int i=0; i < carClinicSystem.getWaitlist().getAll().size();i++) {
+                String firstName = carClinicSystem.getWaitlist().getEntries(i).getPatient().getFirstName();
+                String lastName = carClinicSystem.getWaitlist().getEntries(i).getPatient().getLastName();
+                String id = carClinicSystem.getWaitlist().getEntries(i).getPatient().getPatientID();
 
-
-            System.out.println("First name " + firstName);
-            System.out.println("Last name " + lastName);
-            System.out.println("Id" + id);
-
+                System.out.println("First name " + firstName);
+                System.out.println("Last name " + lastName);
+                System.out.println("Id" + id);
+            }
 
         }
+
     }
             public TimeSlot promptTimeSlot () {
-                System.out.println("Give me the Start Time:");
+                System.out.println("Give me the Start Time: (We're open from 7-21 military time)");
                 int startTime = InputHandler.handleIntegerInput();
                 System.out.println("Give me the End Time:");
                 int endTime = InputHandler.handleIntegerInput();
