@@ -39,6 +39,8 @@ public class CarClinicApp {
                 case 1:
                     handlePatientMenu(carClinicSystem);
                     break;
+                case 2:
+
                 case 4:
                     inMainMenu = false;
                     System.out.println("Alright, have a nice day!");
