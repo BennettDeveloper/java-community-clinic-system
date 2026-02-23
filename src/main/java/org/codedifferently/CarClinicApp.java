@@ -45,6 +45,9 @@ public class CarClinicApp {
                     break;
                 case 4:
                     inMainMenu = false;
+                    System.out.println("End of day summary report.");
+                    System.out.println("Number of appointments created: " + CarAppointment.getInstanceCounter());
+                    System.out.println("Number of customers added to system: " + CarPatient.getInstanceCounter());
                     System.out.println("Alright, have a nice day!");
                     break;
                 default:
@@ -141,9 +144,6 @@ public class CarClinicApp {
                     break;
                 case 4:
                     System.out.println("Exiting out of Patient Menu!");
-                    System.out.println("End of day summary report.");
-                    System.out.println("Number of appointments created: " + CarAppointment.getInstanceCounter());
-                    System.out.println("Number of customers added to system: " + CarPatient.getInstanceCounter());
                     inAppointmentMenu = false;
                     break;
                 default:
