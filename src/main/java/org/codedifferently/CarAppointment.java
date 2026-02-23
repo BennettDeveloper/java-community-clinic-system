@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class CarAppointment {
+
     private static final LocalTime OPEN_TIME = LocalTime.of(7,0);
     private static final LocalTime CLOSE_TIME = LocalTime.of(21,0);
     private static final LocalTime LAST_APPOINTMENT = LocalTime.of(20,0);
@@ -73,3 +74,4 @@ public class CarAppointment {
 
 
 }
+>>>>>>> d6d1dc034c29286415d4af47d7a7fba793f14ae5
