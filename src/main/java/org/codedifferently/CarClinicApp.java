@@ -1,6 +1,7 @@
 package org.codedifferently;
 
 import org.codedifferently.helpers.InputHandler;
+import org.codedifferently.helpers.PatientHandler;
 
 import java.util.Scanner;
 
@@ -67,16 +68,19 @@ public class CarClinicApp {
 
             int scanInput = InputHandler.handleIntegerInput();
 
+            PatientHandler patientHandler = new PatientHandler();
+
             switch(scanInput) {
-                case 0:
-                    break;
                 case 1:
+                    patientHandler.promptNewPatient(carClinicSystem);
                     break;
                 case 2:
+                    patientHandler.viewAllPatients(carClinicSystem);
                     break;
                 case 3:
                     break;
                 case 4:
+                    patientHandler.printSearchedPatient(carClinicSystem);
                     break;
                 case 5:
                     System.out.println("Exiting out of Patient Menu!");
