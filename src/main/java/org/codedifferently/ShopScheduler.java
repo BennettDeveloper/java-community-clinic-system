@@ -1,42 +1,66 @@
 package org.codedifferently;
 import org.codedifferently.data.TimeSlot;
 import org.codedifferently.helpers.InputHandler;
-
+import org.codedifferently.WaitlistEntry;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ShopScheduler {
 
-        // Check if a slot is already booked
-        public boolean isSlotBooked(CarClinicSystem carClinicSystem, String appointmentID) {
-            for (CarAppointment appt : carClinicSystem.getCarAppointments()) {
-                if (appt.getAppointmentID().equals(appointmentID)) {
-                    return true; // Slot is taken
-                }
+    private boolean timeSlotsOverlap(TimeSlot a, TimeSlot b) {
+        return a.getStart().isBefore(b.getEnd()) && a.getEnd().isAfter(b.getStart());
+    }
+
+    public boolean isTimeSlotBooked(CarClinicSystem carClinicSystem, TimeSlot timeSlot) {
+        for (CarAppointment appt : carClinicSystem.getCarAppointments()) {
+            if (appt != null && timeSlotsOverlap(appt.getTimeSlot(), timeSlot)) {
+                return true;
             }
-            return false; // Slot is available
+        }
+        return false;
+    }
+
+
+    public boolean scheduleAppointment(CarClinicSystem carClinicSystem, CarPatient customer, TimeSlot timeSlot, String serviceType) {
+
+        // Use the serviceType the user typed (not hardcoded)
+        CarAppointment newAppt = new CarAppointment(customer, timeSlot, serviceType);
+
+        // Prevent scheduling outside business hours
+        if (!newAppt.isDuringBusinessHours(newAppt.getTimeSlot())) {
+            System.out.println("Can't schedule outside business hours!");
+            return false;
         }
 
-        // Schedule an appointment
-        public boolean scheduleAppointment(CarClinicSystem carClinicSystem, CarPatient customer, TimeSlot timeSlot, String serviceType) {
+        // If slot is already taken, offer waitlist
+        if (isTimeSlotBooked(carClinicSystem, timeSlot)) {
+            System.out.println("That time slot is already booked.");
 
-            CarAppointment newAppt = new CarAppointment(customer, timeSlot, "Oil Change");
+            System.out.println("Would you like to join the waitlist for this time slot?");
+            System.out.println("1. Yes");
+            System.out.println("2. No");
 
-            // Prevent double booking
-            if (isSlotBooked(carClinicSystem, newAppt.getAppointmentID())) {
-                System.out.println("Slot is booked! Can't do it!");
-                return false;
+            int choice = InputHandler.handleIntegerInput();
+            if (choice == 1) {
+                String entryId = "W" + System.currentTimeMillis();
+                WaitlistEntry entry = new WaitlistEntry(entryId, customer, timeSlot, serviceType);
+                carClinicSystem.getWaitlist().add(entry);
+
+                System.out.println("Added to waitlist! Entry ID: " + entryId);
+            } else {
+                System.out.println("Okay, please choose another time slot.");
             }
 
-            //Prevent scheduling during off business hours
-            if(!newAppt.isDuringBusinessHours(newAppt.getTimeSlot())) {
-                System.out.println("Can't schedule during business hours! Can't do it");
-                return false;
-            }
-
-            carClinicSystem.getCarAppointments().add(newAppt);
-            return true;
+            return false;
         }
+
+        // Slot is open, schedule it
+        carClinicSystem.getCarAppointments().add(newAppt);
+        System.out.println("Appointment scheduled successfully!");
+        return true;
+    }
+
+    // Cancel appointment by timeSlot
 
         // Cancel appointment by timeSlot
         public void cancelAppointment(CarClinicSystem carClinicSystem, String appointmentID) {
@@ -51,36 +75,55 @@ public class ShopScheduler {
 
         }
 
-        // Print full schedule
-        public void printSchedule(CarClinicSystem carClinicSystem) {
-            System.out.println("\n=== CWW Auto Repair Shop Daily Schedule ===");
-            for (int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
-                CarAppointment appointment = carClinicSystem.getCarAppointments().get(i);
-                if (appointment == null) {
-                    System.out.println((i + 1) + " - AVAILABLE");
-                } else {
-                    System.out.println((i + 1) + ". " + "(" + appointment.getAppointmentID() + ") "
-                            + appointment.getCarPatient().getLastName()  + ", " + appointment.getCarPatient().getFirstName()
-                            + " (" +  appointment.getTimeSlot().getStart() +
-                            " - " + appointment.getTimeSlot().getEnd() +
-                           ") (" + appointment.getServiceType() + ")");
-                }
+
+
+    // Print full schedule
+    public void printSchedule(CarClinicSystem carClinicSystem) {
+        System.out.println("\n=== CWW Auto Repair Shop Daily Schedule ===");
+
+        for (int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
+
+            CarAppointment appointment = carClinicSystem.getCarAppointments().get(i);
+
+            if (appointment == null) {
+                System.out.println((i + 1) + " - AVAILABLE");
+            } else {
+                System.out.println((i + 1) + ". " + "(" + appointment.getAppointmentID() + ") "
+                        + appointment.getCarPatient().getLastName() + ", " + appointment.getCarPatient().getFirstName()
+                        + " (" + appointment.getTimeSlot().getStart() +
+                        " - " + appointment.getTimeSlot().getEnd() +
+                        ") (" + appointment.getServiceType() + ")");
             }
         }
+        System.out.println("WAITLIST APPOINTMENTS");
 
-        public TimeSlot promptTimeSlot() {
-            System.out.println("Give me the Start Time:");
-            int startTime = InputHandler.handleIntegerInput();
-            System.out.println("Give me the End Time:");
-            int endTime = InputHandler.handleIntegerInput();
-            LocalDateTime startDateTime = LocalDate.now().atTime(startTime, 0);
-            LocalDateTime endDateTime = LocalDate.now().atTime(endTime, 0);
-            return new TimeSlot(startDateTime, endDateTime);
-        }
-        
-        public String promptServiceType() {
-            System.out.println("What type of Service are you doing today?:");
-            return InputHandler.handleStringInput();
+        for(int i=0; i>carClinicSystem.getWaitlist().size();i++){
+            String firstName = carClinicSystem.getWaitlist().getEntries(i).getPatient().getFirstName();
+            String lastName = carClinicSystem.getWaitlist().getEntries(i).getPatient().getLastName();
+            String id = carClinicSystem.getWaitlist().getEntries(i).getPatient().getPatientID();
+
+
+            System.out.println("First name " + firstName);
+            System.out.println("Last name " + lastName);
+            System.out.println("Id" + id);
+
+
         }
     }
+            public TimeSlot promptTimeSlot () {
+                System.out.println("Give me the Start Time:");
+                int startTime = InputHandler.handleIntegerInput();
+                System.out.println("Give me the End Time:");
+                int endTime = InputHandler.handleIntegerInput();
+                LocalDateTime startDateTime = LocalDate.now().atTime(startTime, 0);
+                LocalDateTime endDateTime = LocalDate.now().atTime(endTime, 0);
+                return new TimeSlot(startDateTime, endDateTime);
+            }
 
+            public String promptServiceType () {
+                System.out.println("What type of Service are you doing today?:");
+                return InputHandler.handleStringInput();
+
+
+            }
+        }
