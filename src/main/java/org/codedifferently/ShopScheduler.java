@@ -27,6 +27,13 @@ public class ShopScheduler {
 
             // Prevent double booking
             if (isSlotBooked(carClinicSystem, newAppt.getAppointmentID())) {
+                System.out.println("Slot is booked! Can't do it!");
+                return false;
+            }
+
+            //Prevent scheduling during off business hours
+            if(!newAppt.isDuringBusinessHours(newAppt.getTimeSlot())) {
+                System.out.println("Can't schedule during business hours! Can't do it");
                 return false;
             }
 
@@ -39,7 +46,7 @@ public class ShopScheduler {
 
             for(int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
 
-                if(carClinicSystem.getCarAppointments().get(i).equals(appointmentID)) {
+                if(carClinicSystem.getCarAppointments().get(i).getAppointmentID().equals(appointmentID)) {
                     carClinicSystem.getCarAppointments().remove(i);
                     return true;
                 }
@@ -54,21 +61,16 @@ public class ShopScheduler {
 
             for (int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
 
-                CarAppointment found = null;
+                CarAppointment appointment = carClinicSystem.getCarAppointments().get(i);
 
-                for (CarAppointment appt : carClinicSystem.getCarAppointments()) {
-                    if (1 == i) {
-                        found = appt;
-                        break;
-                    }
-                }
-
-                if (found == null) {
+                if (appointment == null) {
                     System.out.println((i + 1) + " - AVAILABLE");
                 } else {
-                    System.out.println((i + 1) + ") " + found.getTimeSlot().getStart() +
-                            " - " + found.getTimeSlot().getEnd()+
-                           " (" + found.getServiceType() + ")");
+                    System.out.println((i + 1) + ". " + "(" + appointment.getAppointmentID() + ") "
+                            + appointment.getCarPatient().getLastName()  + ", " + appointment.getCarPatient().getFirstName()
+                            + " (" +  appointment.getTimeSlot().getStart() +
+                            " - " + appointment.getTimeSlot().getEnd() +
+                           ") (" + appointment.getServiceType() + ")");
                 }
             }
         }
@@ -77,6 +79,7 @@ public class ShopScheduler {
             System.out.println("Give me the Start Time:");
             int startTime = InputHandler.handleIntegerInput();
 
+            System.out.println("Give me the End Time:");
             int endTime = InputHandler.handleIntegerInput();
 
             LocalDateTime startDateTime = LocalDate.now().atTime(startTime, 0);

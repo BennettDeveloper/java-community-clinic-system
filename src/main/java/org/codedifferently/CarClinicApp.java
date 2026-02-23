@@ -125,7 +125,6 @@ public class CarClinicApp {
                     break;
                 case 2:
                     CarPatient patient = patientHandler.searchForPatient(carClinicSystem);
-
                     if(patient == null) {
                         System.out.println("Patient was not found!!!");
                         //Create new patient if not found.
