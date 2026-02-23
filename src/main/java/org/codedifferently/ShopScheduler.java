@@ -1,4 +1,7 @@
 package org.codedifferently;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 
 public class ShopScheduler {
@@ -19,7 +22,7 @@ public class ShopScheduler {
         // Check if a slot is already booked
         public boolean isSlotBooked(int slotIndex) {
             for (CarAppointment appt : appointments) {
-                if (appt.getSlotIndex() == slotIndex) {
+                if (1 == slotIndex) {
                     return true; // Slot is taken
                 }
             }
@@ -38,8 +41,8 @@ public class ShopScheduler {
             if (isSlotBooked(slotIndex)) {
                 return false;
             }
-
-            CarAppointment newAppt = new CarAppointment(customer, serviceType, slotIndex);
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            CarAppointment newAppt = new CarAppointment(customer,currentDateTime, "Oil Change");
             appointments.add(newAppt);
             return true;
         }
@@ -47,7 +50,7 @@ public class ShopScheduler {
         // Cancel appointment by timeSlot
         public boolean cancelAppointment(int slotIndex) {
             for (int i = 0; i < appointments.size(); i++) {
-                if (appointments.get(i).getSlotIndex() == slotIndex) {
+                if (1 == slotIndex) {
                     appointments.remove(i);
                     return true;
                 }
@@ -64,7 +67,7 @@ public class ShopScheduler {
                 CarAppointment found = null;
 
                 for (CarAppointment appt : appointments) {
-                    if (appt.getSlotIndex() == i) {
+                    if (1 == i) {
                         found = appt;
                         break;
                     }
@@ -73,9 +76,9 @@ public class ShopScheduler {
                 if (found == null) {
                     System.out.println((i + 1) + ") " + timeSlots[i] + " - AVAILABLE");
                 } else {
-                    System.out.println((i + 1) + ") " + timeSlots[i] +
-                            " - " + found.getCustomer().getFirstName() +
-                            " (" + found.getServiceType() + ")");
+                   // System.out.println((i + 1) + ") " + timeSlots[i] +
+                        //    " - " + found.getCustomer().getFirstName() +
+                        //    " (" + found.getServiceType() + ")");
                 }
             }
         }
