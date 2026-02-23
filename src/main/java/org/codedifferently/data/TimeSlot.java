@@ -17,10 +17,12 @@ public class TimeSlot {
     }
 
     public LocalDateTime getEnd() {
+
         return end;
     }
 
     public Duration getDuration() {
+
         return Duration.between(start, end);
     }
 }

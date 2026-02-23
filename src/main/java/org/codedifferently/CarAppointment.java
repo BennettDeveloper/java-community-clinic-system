@@ -15,11 +15,21 @@ public class CarAppointment {
     private static final LocalTime OPEN_TIME = LocalTime.of(7,0);
     private static final LocalTime CLOSE_TIME = LocalTime.of(21,0);
     private static final LocalTime LAST_APPOINTMENT = LocalTime.of(20,0);
-
     private CarPatient carPatient;
     private TimeSlot timeSlot;
-
+    private boolean isCompleted;
     private String serviceType;
+    private static int instanceCounter;
+    {
+        instanceCounter++;
+    }
+    public static int getInstanceCounter() {
+        return instanceCounter;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
 
     public boolean isDuringBusinessHours(TimeSlot timeSlot){
         LocalTime startTime = timeSlot.getStart().toLocalTime();
@@ -74,16 +84,5 @@ public class CarAppointment {
     public void setCarPatient(CarPatient carPatient) {
         this.carPatient = carPatient;
     }
-
-    /*if ()
-    String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-    open 7am-9pm daily (14hours/day)
-    int[] weekdayHours = new int [13];
-    ArrayList<String> apptSlots = new ArrayList<>();
-
-
-    public void makeAppt(){
-*/
-
 
 }

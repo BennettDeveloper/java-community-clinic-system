@@ -10,8 +10,14 @@ public class CarPatient {
     private String email;
     private String phoneNumber;
     private boolean checkedIn;
-    //public Car patientCar;
+    private static int instanceCounter;
+    {
+        instanceCounter++;
+    }
 
+    public static int getInstanceCounter() {
+        return instanceCounter;
+    }
 
     public CarPatient(String patientID, String firstName, String lastName,
                       String email, String phoneNumber) {
@@ -23,7 +29,6 @@ public class CarPatient {
         this.checkedIn = false;
         //this.patientCar = patientCar;
     }
-
     public String getFirstName() {
         return firstName;
     }
@@ -33,6 +38,7 @@ public class CarPatient {
     }
 
     public String getEmail() {
+
         return email;
     }
 
