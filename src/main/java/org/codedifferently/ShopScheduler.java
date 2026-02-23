@@ -5,7 +5,6 @@ import org.codedifferently.WaitlistEntry;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-
 public class ShopScheduler {
 
     private boolean timeSlotsOverlap(TimeSlot a, TimeSlot b) {
@@ -62,44 +61,21 @@ public class ShopScheduler {
     }
 
     // Cancel appointment by timeSlot
-    public boolean cancelAppointment(CarClinicSystem carClinicSystem, String appointmentID) {
 
-        for (int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
-
-            CarAppointment appt = carClinicSystem.getCarAppointments().get(i);
-
-            if (appt.getAppointmentID().equals(appointmentID)) {
-
-                // Save the freed slot before removing
-                TimeSlot freedSlot = appt.getTimeSlot();
-
-                // Remove appointment
-                carClinicSystem.getCarAppointments().remove(i);
-                System.out.println("Appointment canceled.");
-
-                // Auto-schedule from waitlist (same slot)
-                WaitlistEntry next = carClinicSystem.getWaitlist().popNextFor(freedSlot);
-
-                if (next != null) {
-                    CarAppointment waitlistedAppt = new CarAppointment(
-                            next.getPatient(),
-                            freedSlot,
-                            next.getServiceType()
-                    );
-
-                    carClinicSystem.getCarAppointments().add(waitlistedAppt);
-
-                    System.out.println("Scheduled from waitlist: "
-                            + next.getPatient().getLastName() + ", "
-                            + next.getPatient().getFirstName());
+        // Cancel appointment by timeSlot
+        public void cancelAppointment(CarClinicSystem carClinicSystem, String appointmentID) {
+            for(int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
+                if(carClinicSystem.getCarAppointments().get(i).getAppointmentID().equals(appointmentID)) {
+                    carClinicSystem.getCarAppointments().remove(i);
+                    System.out.println("Appointment canceled.");
+                }else {
+                    System.out.println("No appointment found.");
                 }
-
-                return true;
             }
+
         }
 
-        return false;
-    }
+
 
     // Print full schedule
     public void printSchedule(CarClinicSystem carClinicSystem) {
@@ -119,27 +95,35 @@ public class ShopScheduler {
                         ") (" + appointment.getServiceType() + ")");
             }
         }
+        System.out.println("WAITLIST APPOINTMENTS");
+
+        for(int i=0; i>carClinicSystem.getWaitlist().size();i++){
+            String firstName = carClinicSystem.getWaitlist().getEntries(i).getPatient().getFirstName();
+            String lastName = carClinicSystem.getWaitlist().getEntries(i).getPatient().getLastName();
+            String id = carClinicSystem.getWaitlist().getEntries(i).getPatient().getPatientID();
+
+
+            System.out.println("First name " + firstName);
+            System.out.println("Last name " + lastName);
+            System.out.println("Id" + id);
+
+
+        }
     }
+            public TimeSlot promptTimeSlot () {
+                System.out.println("Give me the Start Time:");
+                int startTime = InputHandler.handleIntegerInput();
+                System.out.println("Give me the End Time:");
+                int endTime = InputHandler.handleIntegerInput();
+                LocalDateTime startDateTime = LocalDate.now().atTime(startTime, 0);
+                LocalDateTime endDateTime = LocalDate.now().atTime(endTime, 0);
+                return new TimeSlot(startDateTime, endDateTime);
+            }
 
-    public TimeSlot promptTimeSlot() {
-        System.out.println("Give me the Start Time:");
-        int startTime = InputHandler.handleIntegerInput();
+            public String promptServiceType () {
+                System.out.println("What type of Service are you doing today?:");
+                return InputHandler.handleStringInput();
 
-        System.out.println("Give me the End Time:");
-        int endTime = InputHandler.handleIntegerInput();
 
-        LocalDateTime startDateTime = LocalDate.now().atTime(startTime, 0);
-
-        LocalDateTime endDateTime = LocalDate.now().atTime(endTime, 0);
-
-        TimeSlot timeSlot = new TimeSlot(startDateTime, endDateTime);
-        return timeSlot;
-    }
-
-    public String promptServiceType() {
-        System.out.println("What type of Service are you doing today?:");
-        String serviceType = InputHandler.handleStringInput();
-        return serviceType;
-    }
-}
-
+            }
+        }

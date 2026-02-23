@@ -34,4 +34,8 @@ public class Waitlist {
         public ArrayList<WaitlistEntry> getAll() {
             return entries;
         }
+
+    public WaitlistEntry getEntries(int index) {
+        return entries.get(index);
     }
+}
