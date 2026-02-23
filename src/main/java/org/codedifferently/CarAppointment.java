@@ -1,5 +1,7 @@
 package org.codedifferently;
 
+import org.codedifferently.data.TimeSlot;
+
 import java.sql.Array;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,38 +14,41 @@ public class CarAppointment {
     private static final LocalTime LAST_APPOINTMENT = LocalTime.of(20,0);
 
     private CarPatient carPatient;
-    private LocalDateTime apptDateTime;
+    private TimeSlot timeSlot;
+
     private String serviceType;
 
-    private boolean isDuringBusinessHours(LocalDateTime apptDateTime){
-        LocalTime time = apptDateTime.toLocalTime();
-        return time.isAfter(OPEN_TIME) && time.isBefore(CLOSE_TIME);
+    private boolean isDuringBusinessHours(TimeSlot timeSlot){
+        LocalTime startTime = timeSlot.getStart().toLocalTime();
+        LocalTime endTime = timeSlot.getEnd().toLocalTime();
+
+        return startTime.isAfter(OPEN_TIME) && endTime.isBefore(CLOSE_TIME);
     }
-    public CarAppointment(CarPatient carPatient, LocalDateTime apptDateTime, String serviceType){
-        if(isDuringBusinessHours(apptDateTime)){
+    public CarAppointment(CarPatient carPatient, TimeSlot timeSlot, String serviceType){
+        if(isDuringBusinessHours(timeSlot)){
             this.carPatient = carPatient;
-            this.apptDateTime = apptDateTime;
+            this.timeSlot = timeSlot;
             this.serviceType= serviceType;
         } else {
-            throw new IllegalArgumentException("Appointment must be between our business hours of 7am-9pm");
+            System.out.println("Appointment must be between our business hours of 7am-9pm");
         }
     }
 
-    public CarAppointment(CarPatient carPatient, LocalDateTime apptDateTime){
-        if(isDuringBusinessHours(apptDateTime)){
+    public CarAppointment(CarPatient carPatient, TimeSlot timeSlot){
+        if(isDuringBusinessHours(timeSlot)){
             this.carPatient = carPatient;
-            this.apptDateTime = apptDateTime;
+            this.timeSlot = timeSlot;
         } else {
-            throw new IllegalArgumentException("Appointment must be between our business hours of 7am-9pm");
+            System.out.println("Appointment must be between our business hours of 7am-9pm");
         }
     }
 
-    public LocalDateTime getApptDateTime() {
-        return apptDateTime;
+    public TimeSlot getTimeSlot() {
+        return timeSlot;
     }
 
-    public void setApptDateTime(LocalDateTime apptDateTime) {
-        this.apptDateTime = apptDateTime;
+    public void setTimeSlot(TimeSlot timeSlot) {
+        this.timeSlot = timeSlot;
     }
 
     public String getServiceType() {
