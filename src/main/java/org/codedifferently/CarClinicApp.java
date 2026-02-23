@@ -132,7 +132,6 @@ public class CarClinicApp {
                     }
                     TimeSlot timeSlot = shopScheduler.promptTimeSlot();
                     String serviceType = shopScheduler.promptServiceType();
-
                     shopScheduler.scheduleAppointment(carClinicSystem, patient, timeSlot, serviceType);
                     break;
                 case 3:
@@ -142,6 +141,9 @@ public class CarClinicApp {
                     break;
                 case 4:
                     System.out.println("Exiting out of Patient Menu!");
+                    System.out.println("End of day summary report.");
+                    System.out.println("Number of appointments created: " + CarAppointment.getInstanceCounter());
+                    System.out.println("Number of customers added to system: " + CarPatient.getInstanceCounter());
                     inAppointmentMenu = false;
                     break;
                 default:

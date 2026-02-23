@@ -4,9 +4,6 @@ import org.codedifferently.helpers.InputHandler;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDate;
-import java.util.ArrayList;
-import java.util.UUID;
 
 public class ShopScheduler {
 
@@ -42,27 +39,23 @@ public class ShopScheduler {
         }
 
         // Cancel appointment by timeSlot
-        public boolean cancelAppointment(CarClinicSystem carClinicSystem, String appointmentID) {
-
+        public void cancelAppointment(CarClinicSystem carClinicSystem, String appointmentID) {
             for(int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
-
                 if(carClinicSystem.getCarAppointments().get(i).getAppointmentID().equals(appointmentID)) {
                     carClinicSystem.getCarAppointments().remove(i);
-                    return true;
+                    System.out.println("Appointment canceled.");
+                }else {
+                    System.out.println("No appointment found.");
                 }
             }
-            return false;
 
         }
 
         // Print full schedule
         public void printSchedule(CarClinicSystem carClinicSystem) {
             System.out.println("\n=== CWW Auto Repair Shop Daily Schedule ===");
-
             for (int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
-
                 CarAppointment appointment = carClinicSystem.getCarAppointments().get(i);
-
                 if (appointment == null) {
                     System.out.println((i + 1) + " - AVAILABLE");
                 } else {
@@ -78,22 +71,16 @@ public class ShopScheduler {
         public TimeSlot promptTimeSlot() {
             System.out.println("Give me the Start Time:");
             int startTime = InputHandler.handleIntegerInput();
-
             System.out.println("Give me the End Time:");
             int endTime = InputHandler.handleIntegerInput();
-
             LocalDateTime startDateTime = LocalDate.now().atTime(startTime, 0);
-
             LocalDateTime endDateTime = LocalDate.now().atTime(endTime, 0);
-
-            TimeSlot timeSlot = new TimeSlot(startDateTime, endDateTime);
-            return timeSlot;
+            return new TimeSlot(startDateTime, endDateTime);
         }
         
         public String promptServiceType() {
             System.out.println("What type of Service are you doing today?:");
-            String serviceType = InputHandler.handleStringInput();
-            return serviceType;
+            return InputHandler.handleStringInput();
         }
     }
 
