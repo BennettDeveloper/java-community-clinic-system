@@ -1,12 +1,13 @@
 package org.codedifferently.helpers;
 import org.codedifferently.CarClinicSystem;
 import org.codedifferently.CarPatient;
+import org.codedifferently.data.Car;
 
 import java.util.UUID;
 
 public class PatientHandler {
 
-    public void promptNewPatient(CarClinicSystem carClinicSystem) {
+    public CarPatient promptNewPatient(CarClinicSystem carClinicSystem) {
 
         //Prompt user for information. (firstname, lastname, email, phoneNumber)
         System.out.println("What is your first name?");
@@ -31,6 +32,7 @@ public class PatientHandler {
         //Add new Car Patient to Car Patient Array List.
         carClinicSystem.getCarPatients().add(carPatient);
 
+        return carPatient;
     }
 
     public void viewAllPatients(CarClinicSystem carClinicSystem) {

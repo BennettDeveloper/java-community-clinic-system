@@ -1,5 +1,6 @@
 package org.codedifferently;
 
+import org.codedifferently.data.TimeSlot;
 import org.codedifferently.helpers.InputHandler;
 import org.codedifferently.helpers.PatientHandler;
 
@@ -40,7 +41,8 @@ public class CarClinicApp {
                     handlePatientMenu(carClinicSystem);
                     break;
                 case 2:
-
+                    handleAppointmentMenu(carClinicSystem);
+                    break;
                 case 4:
                     inMainMenu = false;
                     System.out.println("Alright, have a nice day!");
@@ -88,6 +90,59 @@ public class CarClinicApp {
                 case 5:
                     System.out.println("Exiting out of Patient Menu!");
                     inPatientMenu = false;
+                    break;
+                default:
+                    System.out.println("Thats not an option on our menu, please try again.");
+            }
+        }
+
+    }
+
+    void handleAppointmentMenu(CarClinicSystem carClinicSystem) {
+
+        boolean inAppointmentMenu = true;
+        while(inAppointmentMenu) {
+            System.out.println("-------------------------------------");
+            System.out.println("Appointment Viewer");
+            System.out.println("You have reached A POINT meant in time.");
+            System.out.println("What would you like to do today?");
+            System.out.println("-------------------------------------");
+            System.out.println("1. View Timeslots");
+            System.out.println("2. Schedule an appointment");
+            System.out.println("3. Cancel an appointment.");
+            System.out.println("4. Exit");
+            System.out.println("-------------------------------------");
+
+            int scanInput = InputHandler.handleIntegerInput();
+
+            PatientHandler patientHandler = new PatientHandler();
+
+            ShopScheduler shopScheduler = new ShopScheduler();
+
+            switch(scanInput) {
+                case 1:
+                    shopScheduler.printSchedule(carClinicSystem);
+                    break;
+                case 2:
+                    CarPatient patient = patientHandler.searchForPatient(carClinicSystem);
+                    if(patient == null) {
+                        System.out.println("Patient was not found!!!");
+                        //Create new patient if not found.
+                        patient = patientHandler.promptNewPatient(carClinicSystem);
+                    }
+                    TimeSlot timeSlot = shopScheduler.promptTimeSlot();
+                    String serviceType = shopScheduler.promptServiceType();
+
+                    shopScheduler.scheduleAppointment(carClinicSystem, patient, timeSlot, serviceType);
+                    break;
+                case 3:
+                    System.out.println("Give me the appointment ID that you want to cancel: ");
+                    String appointmentID = InputHandler.handleStringInput();
+                    shopScheduler.cancelAppointment(carClinicSystem, appointmentID);
+                    break;
+                case 4:
+                    System.out.println("Exiting out of Patient Menu!");
+                    inAppointmentMenu = false;
                     break;
                 default:
                     System.out.println("Thats not an option on our menu, please try again.");

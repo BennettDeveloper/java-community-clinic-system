@@ -1,28 +1,19 @@
 package org.codedifferently;
+import org.codedifferently.data.TimeSlot;
+import org.codedifferently.helpers.InputHandler;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ShopScheduler {
 
-        // Array representing available time slots for the day
-        private final String[] timeSlots = {
-                "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
-                "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"
-        };
-
-        // Store appointments using ArrayList
-        private ArrayList<CarAppointment> appointments = new ArrayList<>();
-
-        public String[] getTimeSlots() {
-            return timeSlots;
-        }
-
         // Check if a slot is already booked
-        public boolean isSlotBooked(int slotIndex) {
-            for (CarAppointment appt : appointments) {
-                if (1 == slotIndex) {
+        public boolean isSlotBooked(CarClinicSystem carClinicSystem, String appointmentID) {
+            for (CarAppointment appt : carClinicSystem.getCarAppointments()) {
+                if (appt.getAppointmentID().equals(appointmentID)) {
                     return true; // Slot is taken
                 }
             }
@@ -30,57 +21,79 @@ public class ShopScheduler {
         }
 
         // Schedule an appointment
-        public boolean scheduleAppointment(CarPatient customer, String serviceType, int slotIndex) {
+        public boolean scheduleAppointment(CarClinicSystem carClinicSystem, CarPatient customer, TimeSlot timeSlot, String serviceType) {
 
-            // check for timeSlot range
-            if (slotIndex < 0 || slotIndex >= timeSlots.length) {
-                return false;
-            }
+            CarAppointment newAppt = new CarAppointment(customer, timeSlot, "Oil Change");
 
             // Prevent double booking
-            if (isSlotBooked(slotIndex)) {
+            if (isSlotBooked(carClinicSystem, newAppt.getAppointmentID())) {
+                System.out.println("Slot is booked! Can't do it!");
                 return false;
             }
-            LocalDateTime currentDateTime = LocalDateTime.now();
-            CarAppointment newAppt = new CarAppointment(customer,currentDateTime, "Oil Change");
-            appointments.add(newAppt);
+
+            //Prevent scheduling during off business hours
+            if(!newAppt.isDuringBusinessHours(newAppt.getTimeSlot())) {
+                System.out.println("Can't schedule during business hours! Can't do it");
+                return false;
+            }
+
+            carClinicSystem.getCarAppointments().add(newAppt);
             return true;
         }
 
         // Cancel appointment by timeSlot
-        public boolean cancelAppointment(int slotIndex) {
-            for (int i = 0; i < appointments.size(); i++) {
-                if (1 == slotIndex) {
-                    appointments.remove(i);
+        public boolean cancelAppointment(CarClinicSystem carClinicSystem, String appointmentID) {
+
+            for(int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
+
+                if(carClinicSystem.getCarAppointments().get(i).getAppointmentID().equals(appointmentID)) {
+                    carClinicSystem.getCarAppointments().remove(i);
                     return true;
                 }
             }
             return false;
+
         }
 
         // Print full schedule
-        public void printSchedule() {
+        public void printSchedule(CarClinicSystem carClinicSystem) {
             System.out.println("\n=== CWW Auto Repair Shop Daily Schedule ===");
 
-            for (int i = 0; i < timeSlots.length; i++) {
+            for (int i = 0; i < carClinicSystem.getCarAppointments().size(); i++) {
 
-                CarAppointment found = null;
+                CarAppointment appointment = carClinicSystem.getCarAppointments().get(i);
 
-                for (CarAppointment appt : appointments) {
-                    if (1 == i) {
-                        found = appt;
-                        break;
-                    }
-                }
-
-                if (found == null) {
-                    System.out.println((i + 1) + ") " + timeSlots[i] + " - AVAILABLE");
+                if (appointment == null) {
+                    System.out.println((i + 1) + " - AVAILABLE");
                 } else {
-                   // System.out.println((i + 1) + ") " + timeSlots[i] +
-                        //    " - " + found.getCustomer().getFirstName() +
-                        //    " (" + found.getServiceType() + ")");
+                    System.out.println((i + 1) + ". " + "(" + appointment.getAppointmentID() + ") "
+                            + appointment.getCarPatient().getLastName()  + ", " + appointment.getCarPatient().getFirstName()
+                            + " (" +  appointment.getTimeSlot().getStart() +
+                            " - " + appointment.getTimeSlot().getEnd() +
+                           ") (" + appointment.getServiceType() + ")");
                 }
             }
+        }
+
+        public TimeSlot promptTimeSlot() {
+            System.out.println("Give me the Start Time:");
+            int startTime = InputHandler.handleIntegerInput();
+
+            System.out.println("Give me the End Time:");
+            int endTime = InputHandler.handleIntegerInput();
+
+            LocalDateTime startDateTime = LocalDate.now().atTime(startTime, 0);
+
+            LocalDateTime endDateTime = LocalDate.now().atTime(endTime, 0);
+
+            TimeSlot timeSlot = new TimeSlot(startDateTime, endDateTime);
+            return timeSlot;
+        }
+        
+        public String promptServiceType() {
+            System.out.println("What type of Service are you doing today?:");
+            String serviceType = InputHandler.handleStringInput();
+            return serviceType;
         }
     }
 
